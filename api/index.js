@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import dbConn from './config/dbConnect.js';
 
 const app = express();
 app.use(
@@ -11,6 +12,8 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+dbConn();
 
 dotenv.config();
 

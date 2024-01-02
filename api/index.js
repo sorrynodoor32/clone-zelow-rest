@@ -3,6 +3,7 @@ require('dotenv').config();
 const cors = require('cors');
 const dbConn = require('./config/dbConnect.js');
 const initRoutes = require('./routes/index');
+require('./config/redis.config');
 
 const app = express();
 app.use(

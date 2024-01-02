@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-boolean-cast */
 /* eslint-disable react/prop-types */
 /* eslint-disable react-refresh/only-export-components */
 import { Link, NavLink } from "react-router-dom"
@@ -12,7 +13,7 @@ import { useAppStore } from "~/store/useAppStore"
 import {Login} from '~/components/index'
 
 const Navigation = ({location}) => {
-  const {token} = useUserStore()
+  const {currentUser} = useUserStore()
   const {setModal} = useAppStore()
   return (
     <div className={twMerge(clsx("w-full bg-transparent flex items-center justify-between fixed z-50 top-[85px] px-[100px] py-[26px]"), location.pathname !== '/' && 'bg-white')}>
@@ -25,7 +26,7 @@ const Navigation = ({location}) => {
                 {el.text}
             </NavLink>
         ))}
-        {!token ? 
+        {!currentUser ? 
           <Button
             className={twMerge(clsx(location.pathname === '/' &&'bg-transparent border-main-100 border'))}
             onClick={() => setModal(true, <Login />)}

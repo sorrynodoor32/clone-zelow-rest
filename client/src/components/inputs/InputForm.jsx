@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import clsx from "clsx"
 import { twMerge } from "tailwind-merge"
 
 const InputForm = ({style= 'form-input', containerClassname, label, id, type = 'text', register, errors = {}, inputClassname, validate, placeholder}) => {
   return (
-    <div className={twMerge(clsx('flex flex-col gap-2 w-full' ))}>
+    <div className={twMerge(clsx('flex flex-col gap-2 w-full', containerClassname ))}>
       {label && 
         <label className="font-medium text-main-700" htmlFor={id}>{label}</label>
       }

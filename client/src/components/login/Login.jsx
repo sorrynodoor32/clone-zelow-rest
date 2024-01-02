@@ -1,18 +1,57 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import clsx from "clsx"
 import { useEffect } from "react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { Button, InputForm } from ".."
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { apiRegister, apiSignin } from "~/apis/auth"
+import { useAppStore } from "~/store/useAppStore"
+import { useUserStore } from "~/store/useUserStore"
+import { Button, InputForm, InputRadio } from ".."
 
 const Login = () => {
   const [variant, setVariant] = useState('LOGIN')
-  const {register, formState: {errors}, handleSubmit, reset, watch } = useForm()
+  const [isLoading, setIsLoading] = useState(false)
+  const {setModal} = useAppStore()
+  const {token, setToken, roles} = useUserStore()
+  const {register, formState: {errors}, handleSubmit, reset } = useForm()
 
   useEffect(()=>{
     reset()
   },[variant])
-  const onSubmit = (data) => {
-    console.log(data)
+
+  const onSubmit = async (data) => {
+    if(variant === 'REGISTER'){
+      setIsLoading(true)
+      const response = await apiRegister(data)
+      setIsLoading(false)
+
+      if(response.success){
+        Swal.fire({
+          icon:'success',
+          title:'Congrats!',
+          text: response.mes,
+          showConfirmButton: true,
+          confirmButtonText: 'Go SignIn'
+        }).then(({isConfirmed})=>{
+          if(isConfirmed) setVariant("LOGIN")
+        })
+      }else toast.error(response.mes)
+    }
+
+    if(variant === 'LOGIN'){
+      const {name, ...payload} = data
+      const response = await apiSignin(payload)
+      if(response.success){
+        toast.success(response.mes)
+        setToken(response.accessToken)
+        setModal(false, null)
+
+      }else toast.error(response.mes)
+    }
   }
 
   return (
@@ -43,7 +82,11 @@ const Login = () => {
           inputClassname='rounded-md'
           placeholder='Type your phone number here...'
           validate={{
-            required:'This field cannot empty.'
+            required:'This field cannot empty.',
+            pattern: {
+              value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
+              message:'Phone number invalid'
+            }
           }}
           errors={errors}
         />
@@ -71,6 +114,23 @@ const Login = () => {
             }}
             errors={errors}
         />
+        }
+        
+        {variant === 'REGISTER' && 
+          <InputRadio 
+            label='Type account' 
+            register={register}
+            id='roleCode'
+            validate={{
+              required:'This field cannot empty.'
+            }}
+            optionClassname="grid grid-cols-3 gap-4"
+            errors={errors}
+            options={roles?.filter(el => el.code !== 'ROL1')?.map(el => ({
+              label: el.value,
+              value: el.code
+            }))}
+          />
         }
       
         <Button

@@ -7,4 +7,12 @@ export const path = {
     PROPERTIES: 'properties',
     SEARCH: 'search',
 
+    //ADMIN
+
+    ADMIN_LAYOUT: 'admin',
+    DASHBOARD: 'dashboard',
+    MANAGE_PROPERTY_TYPE: 'manage-property-type',
+    CREATE_PROPERTY_TYPE: 'create-property-type'
+
+
 }
